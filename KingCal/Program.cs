@@ -1,4 +1,3 @@
-using KingCal.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +11,7 @@ namespace KingCal
     {
         public static void Main(string[] args)
         {
-            Console.Title = "KingCal Kitchen";
+            Console.Title = "KingCal Kitchen APIs";
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -20,9 +19,6 @@ namespace KingCal
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
                 .AddCommandLine(args)
                 .Build();
-
-            //var appSettingsSection = config.GetSection("AppSettings");
-            //var appSettings = appSettingsSection.Get<AppSettings>();
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config).CreateLogger();

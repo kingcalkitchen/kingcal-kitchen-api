@@ -1,4 +1,4 @@
-﻿namespace KingCal.Models
+﻿namespace KingCal.Data.Models
 {
     public class AppSettings
     {

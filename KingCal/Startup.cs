@@ -1,4 +1,5 @@
 using KingCal.Data;
+using KingCal.Data.Models;
 using KingCal.Models;
 using KingCal.Service.Implementations;
 using KingCal.Service.Interfaces;
@@ -62,7 +63,7 @@ namespace KingCal
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "KingCal Kitchen APIs");
                 c.RoutePrefix = string.Empty;
             });
 
