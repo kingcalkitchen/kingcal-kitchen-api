@@ -18,7 +18,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KingCal.User", "KingCal.User\KingCal.User.csproj", "{EFF1395E-E338-4EF9-A12C-85100BDFF07C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingCal.User", "KingCal.User\KingCal.User.csproj", "{EFF1395E-E338-4EF9-A12C-85100BDFF07C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{1231BB3E-28CE-49DD-A1D6-78517F9420EC}"
+	ProjectSection(SolutionItems) = preProject
+		sql\kingcal_kitchen_01_21_20.sql = sql\kingcal_kitchen_01_21_20.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,5 @@
 using KingCal.Data;
 using KingCal.Data.Models;
-using KingCal.Models;
 using KingCal.Service.Implementations;
 using KingCal.Service.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -33,7 +32,8 @@ namespace KingCal
 
             // TODO
             // create DB User
-            string connectionString = $"Data Source={appSettings.HOSTNAME};Initial Catalog={appSettings.DB_NAME};";
+            string connectionString = 
+                $"Data Source={appSettings.HOSTNAME};Initial Catalog={appSettings.DB_NAME};User Id={appSettings.USERNAME};Password={appSettings.PASSWORD};";
 
             services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
 
@@ -44,7 +44,7 @@ namespace KingCal
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "KingCal Kitchen API", Version = "v1" });
             });
         }
 
