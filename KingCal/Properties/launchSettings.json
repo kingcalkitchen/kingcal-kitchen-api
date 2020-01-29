@@ -9,11 +9,27 @@
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
+    "LOCAL": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local"
+      },
+      "applicationUrl": "http://localhost:7000"
+    },
     "DEV": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:7000"
+    },
+    "QA": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "QA"
       },
       "applicationUrl": "http://localhost:7000"
     },

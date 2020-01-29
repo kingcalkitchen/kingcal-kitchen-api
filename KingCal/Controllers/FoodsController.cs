@@ -1,5 +1,7 @@
 ﻿using KingCal.Data.DTOs;
 using KingCal.Service.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace KingCal.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("api/[controller]")]
     public class FoodsController : ControllerBase
     {
         private readonly ILogger<FoodsController> _logger;
-
         private readonly IFood _foodService;
 
         public FoodsController(ILogger<FoodsController> logger, IFood foodService)
@@ -22,7 +24,7 @@ namespace KingCal.Controllers
             _foodService = foodService;
         }
 
-        [HttpGet, Route("GetAll")]
+        [HttpGet("GetAll")]
         public ActionResult<IAsyncEnumerable<FoodDTO>> GetAll()
         {
             IAsyncEnumerable<FoodDTO> list = _foodService.GetAllAsync();
@@ -30,7 +32,7 @@ namespace KingCal.Controllers
             return Ok(list);
         }
 
-        [HttpGet, Route("GetById/{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<ActionResult<FoodDTO>> GetById(Guid id) 
         {
             FoodDTO food = await _foodService.GetByIdAsync(id);
@@ -41,7 +43,7 @@ namespace KingCal.Controllers
             return Ok(food);
         }
 
-        [HttpPost, Route("Create")]
+        [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] FoodDTO foodDTO) 
         {
             Guid id = await _foodService.CreateAsync(foodDTO);
@@ -56,7 +58,7 @@ namespace KingCal.Controllers
                 id);
         }
 
-        [HttpPut, Route("Update")]
+        [HttpPut("Update")]
         public async Task<ActionResult> Update([FromBody] FoodDTO foodDTO) 
         {
             int response = await _foodService.UpdateAsync(foodDTO);
@@ -67,7 +69,7 @@ namespace KingCal.Controllers
             return Ok();
         }
 
-        [HttpDelete, Route("Delete/{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<ActionResult> Delete(Guid id) 
         {
             int response = await _foodService.DeleteAsync(id);
