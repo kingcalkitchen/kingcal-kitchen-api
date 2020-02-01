@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KingCal.Data.Entities
 {
-    [Table("UserRoles", Schema = "User")]
-    public class UserRole
+    [Table("Meals", Schema = "Food")]
+    public class Meal
     {
         [Key]
         public Guid Id { get; set; }
 
-        public Guid UserId { get; set; }
+        public string Name { get; set; }
 
-        public Guid RoleId { get; set; }
+        public Guid MealTypeId { get; set; }
 
         public Guid CreatedBy { get; set; }
 
@@ -23,17 +23,13 @@ namespace KingCal.Data.Entities
         public DateTime? DeletedDate { get; set; }
 
 
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
-
-        [ForeignKey("RoleId")]
-        public virtual Role Role { get; set; }
+        [ForeignKey("MealTypeId")]
+        public virtual MealType MealType { get; set; }
 
         [ForeignKey("CreatedBy")]
         public virtual User Creator { get; set; }
 
         [ForeignKey("DeletedBy")]
         public virtual User Deletor { get; set; }
-
     }
 }

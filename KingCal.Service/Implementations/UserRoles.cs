@@ -28,7 +28,7 @@ namespace KingCal.Service.Implementations
         {
             return from role in _context.Roles
                    join userRole in _context.UserRoles on role.Id equals userRole.RoleId
-                   where userRole.UserId == id && userRole.DeletedDate == null && userRole.DeletedBy == Guid.Empty
+                   where userRole.UserId == id && userRole.DeletedDate == null && userRole.DeletedBy == null
                    select new Data.Entities.Role { Id = role.Id, Name = role.Name };
         }
 

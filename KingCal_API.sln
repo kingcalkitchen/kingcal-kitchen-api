@@ -22,6 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{1231BB3E-28C
 	ProjectSection(SolutionItems) = preProject
 		sql\kingcal_kitchen_01_21_20.sql = sql\kingcal_kitchen_01_21_20.sql
 		sql\kingcal_kitchen_01_28_20.sql = sql\kingcal_kitchen_01_28_20.sql
+		sql\kingcal_kitchen_01_29_20.sql = sql\kingcal_kitchen_01_29_20.sql
 	EndProjectSection
 EndProject
 Global

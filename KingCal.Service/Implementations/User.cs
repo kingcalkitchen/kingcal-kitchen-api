@@ -77,7 +77,7 @@ namespace KingCal.Service.Implementations
                 RoleId = roleId,
                 CreatedBy = userId,
                 CreatedDate = DateTime.Now,
-                DeletedBy = Guid.Empty,
+                DeletedBy = null,
                 DeletedDate = null,
             };
             _context.UserRoles.Add(userRole);
