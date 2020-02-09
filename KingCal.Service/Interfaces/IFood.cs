@@ -7,14 +7,14 @@ namespace KingCal.Service.Interfaces
 {
     public interface IFood
     {
-        IAsyncEnumerable<FoodDTO> GetAllAsync();
+        //IAsyncEnumerable<FoodDTO> GetAllAsync();
 
-        Task<FoodDTO> GetByIdAsync(Guid id);
+        //Task<FoodDTO> GetByIdAsync(Guid id);
 
-        Task<Guid> CreateAsync(FoodDTO foodDTO);
+        //Task<Guid> CreateAsync(FoodDTO foodDTO);
 
-        Task<int> UpdateAsync(FoodDTO foodDTO);
+        //Task<int> UpdateAsync(FoodDTO foodDTO);
 
-        Task<int> DeleteAsync(Guid id);
+        //Task<int> DeleteAsync(Guid id);
     }
 }

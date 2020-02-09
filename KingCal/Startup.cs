@@ -34,9 +34,17 @@ namespace KingCal
             // create DB User
             string connectionString = $"Data Source={appSettings.HOSTNAME};Initial Catalog={appSettings.DB_NAME};";
 
+            //services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString, b => b.MigrationsAssembly("KingCal")));
             services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
 
-            services.AddScoped<IFood, Food>();
+            //services.AddScoped<IFood, Food>();
+            services.AddScoped<IAddress, Address>();
+            services.AddScoped<IProperty, Property>();
+            services.AddScoped<ICategory, Category>();
+            services.AddScoped<ISubCategory, SubCategory>();
+            services.AddScoped<IItem, Item>();
+            services.AddScoped<ISubItem, SubItem>();
+            services.AddScoped<ISubItemProperty, SubItemProperty>();
 
             services.AddControllers();
 
