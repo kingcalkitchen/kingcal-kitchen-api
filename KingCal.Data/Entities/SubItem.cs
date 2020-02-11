@@ -11,7 +11,7 @@ namespace KingCal.Data.Entities
         [Key]
         public Guid Id { get; set; }
         [Required]
-        public List<Property> Properties { get; set; }
+        public List<SubItemProperty> SubItemProperty { get; set; }
         [Required]
         public DateTime CreatedDate { get; set; }
         [Required]

@@ -12,9 +12,9 @@ namespace KingCal.Controllers
     [ApiController]
     public class PropertyController : ControllerBase
     {
-        private readonly ILogger<AddressController> _logger;
+        private readonly ILogger<PropertyController> _logger;
         private readonly IProperty _propertyService;
-        public PropertyController(ILogger<AddressController> logger, IProperty propertyService)
+        public PropertyController(ILogger<PropertyController> logger, IProperty propertyService)
         {
             _logger = logger;
             _propertyService = propertyService;
@@ -24,6 +24,14 @@ namespace KingCal.Controllers
         public ActionResult<IAsyncEnumerable<PropertyDTO>> GetAll()
         {
             IAsyncEnumerable<PropertyDTO> list = _propertyService.GetAllAsync();
+
+            return Ok(list);
+        }
+
+        [HttpGet, Route("GetByItem/{itemId}")]
+        public ActionResult<IAsyncEnumerable<PropertyDTO>> GetByItem(Guid itemId)
+        {
+            IAsyncEnumerable<PropertyDTO> list = _propertyService.GetByItemAsync(itemId);
 
             return Ok(list);
         }

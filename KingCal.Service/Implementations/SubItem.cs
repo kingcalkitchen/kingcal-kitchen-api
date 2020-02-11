@@ -14,41 +14,76 @@ namespace KingCal.Service.Implementations
     public class SubItem : ISubItem
     {
         private readonly ILogger<SubItem> _logger;
-        private readonly DataContext _context;
-
-        public SubItem(ILogger<SubItem> logger, DataContext context)
+        private readonly DataContext _subItemContext;
+        private readonly ISubItemProperty _subItemPropertyService;
+        
+        public SubItem(ILogger<SubItem> logger, 
+                        DataContext subItemContext, 
+                        ISubItemProperty subItemPropertyService)
         {
             _logger = logger;
-            _context = context;
+            _subItemContext = subItemContext;
+            _subItemPropertyService = subItemPropertyService;
         }
 
         public async IAsyncEnumerable<SubItemDTO> GetAllAsync()
         {
-            await foreach (var subItem in _context.SubItem.AsAsyncEnumerable())
+
+            /*var subItemWithProp = await _context.SubItem.Join(
+                                                _context.SubItemProperty,
+                                                subItem => subItem.Id,
+                                                subItemProperty => subItemProperty.SubItem.Id,
+                                                (subItem, subItemProperty) => new
+                                                {
+                                                    SubItemId = subItemProperty.SubItemId,
+                                                    SubItemPropId = subItemProperty.Id,
+                                                    SubItemDeletedDate = subItem.DeletedDate,
+                                                    SubItemPropDeletedDate = subItemProperty.DeletedDate
+                                                }
+                                                ).Where(x => x.SubItemDeletedDate == null && 
+                                                             x.SubItemPropDeletedDate == null).ToListAsync();
+*/
+            List<Data.Entities.SubItem> subItemList = await _subItemContext.SubItem.ToListAsync();
+
+
+            foreach (var subItem in subItemList)
             {
                 if (subItem.DeletedDate is null)
                 {
-                    SubItemDTO subItemDTO = CloneSubItemEntity(subItem);
+                    IAsyncEnumerable<SubItemPropertyDTO> subItemPropertyDTOList = _subItemPropertyService.GetBySubItemAsync(subItem.Id);
 
-                    yield return subItemDTO;
+                    IAsyncEnumerable<SubItemDTO> subItemDTO = CloneSubItemEntity(subItem, subItemPropertyDTOList);
+
+                    await foreach (var item in subItemDTO)
+                    {
+                        yield return item;
+                    }
+                    
                 }
             }
         }
 
-        public async Task<SubItemDTO> GetByIdAsync(Guid id)
+        
+        public async IAsyncEnumerable<SubItemDTO> GetByIdAsync(Guid id)
         {
-            Data.Entities.SubItem subItem = await _context.FindAsync<Data.Entities.SubItem>(id);
+            Data.Entities.SubItem subItem = await _subItemContext.FindAsync<Data.Entities.SubItem>(id);
 
             if (subItem is null || subItem.DeletedDate != null)
-                return new SubItemDTO();
+                yield return new SubItemDTO();
 
-            return CloneSubItemEntity(subItem);
+            IAsyncEnumerable<SubItemPropertyDTO> subItemPropertyDTOList = _subItemPropertyService.GetBySubItemAsync(subItem.Id);
+
+            await foreach(var item in CloneSubItemEntity(subItem, subItemPropertyDTOList))
+            {
+                yield return item;
+            }
+            
         }
 
         public async Task<Guid> CreateAsync(SubItemDTO subItemDTO)
         {
             Guid id = Guid.NewGuid();
-            await _context.SubItem.AddAsync(new Data.Entities.SubItem
+            await _subItemContext.SubItem.AddAsync(new Data.Entities.SubItem
             {
                 Id = id,
                 CreatedDate = DateTime.Now,
@@ -57,7 +92,7 @@ namespace KingCal.Service.Implementations
 
             try
             {
-                var response = await _context.SaveChangesAsync();
+                var response = await _subItemContext.SaveChangesAsync();
                 if (response > 0)
                     return id;
                 else
@@ -69,13 +104,21 @@ namespace KingCal.Service.Implementations
                 return Guid.Empty;
             }
         }
-
-
-        public SubItemDTO CloneSubItemEntity(Data.Entities.SubItem subItem)
+        
+        public async IAsyncEnumerable<SubItemDTO> CloneSubItemEntity(Data.Entities.SubItem subItem, IAsyncEnumerable<SubItemPropertyDTO> subItemPropertyDTOList)
         {
+
+            List<SubItemPropertyDTO> subItemPropertyList = new List<SubItemPropertyDTO>();
+
+            await foreach (var subItemProperty in subItemPropertyDTOList)
+            {
+                subItemPropertyList.Add(subItemProperty);
+            };
+
             SubItemDTO subItemDTO = new SubItemDTO
             {
                 Id = subItem.Id,
+                SubItemPropertyList = subItemPropertyList,
                 CreatedDate = subItem.CreatedDate,
                 CreatedBy = subItem.CreatedBy,
                 UpdatedDate = subItem.UpdatedDate,
@@ -83,7 +126,8 @@ namespace KingCal.Service.Implementations
                 DeletedDate = subItem.DeletedDate,
                 DeletedBy = subItem.DeletedBy,
             };
-            return subItemDTO;
+
+            yield return subItemDTO;
         }
 
         public static implicit operator SubItem(Data.Entities.SubItem v)

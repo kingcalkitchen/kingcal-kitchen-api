@@ -7,6 +7,6 @@ namespace KingCal.Service.Interfaces
 {
     public interface IItemSubItem
     {
-        Task<Guid> AddSubItemToItem(Guid itemId, Guid subItemId);
+        Task<bool> AddSubItemToItemAsync(Guid itemId, Guid subItemId);
     }
 }

@@ -35,6 +35,22 @@ namespace KingCal.Service.Implementations
             }
         }
 
+        public async IAsyncEnumerable<SubItemPropertyDTO> GetBySubItemAsync(Guid subItemId)
+        {
+
+            List<Data.Entities.SubItemProperty> subItemPropertyList = await _context.SubItemProperty.Where(a => a.SubItemId == subItemId).ToListAsync();
+
+            foreach (var subItemProperty in subItemPropertyList)
+            {
+                if (subItemProperty.DeletedDate is null)
+                {
+                    SubItemPropertyDTO subItemPropertyDTO = CloneSubItemPropertyEntity(subItemProperty);
+
+                    yield return subItemPropertyDTO;
+                }
+            }
+        }
+
         public async Task<SubItemPropertyDTO> GetByIdAsync(Guid id)
         {
             Data.Entities.SubItemProperty subItemProperty = await _context.FindAsync<Data.Entities.SubItemProperty>(id);

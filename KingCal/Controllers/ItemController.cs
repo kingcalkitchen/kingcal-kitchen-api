@@ -29,13 +29,18 @@ namespace KingCal.Controllers
             return Ok(list);
         }
 
-        [HttpGet, Route("GetById/{id}")]
-        public async Task<ActionResult<ItemDTO>> GetById(Guid id)
+        [HttpGet, Route("GetAllWithSubType")]
+        public ActionResult<IAsyncEnumerable<ItemDTO>> GetAllWithSubType()
         {
-            ItemDTO item = await _itemService.GetByIdAsync(id);
+            IAsyncEnumerable<ItemDTO> list = _itemService.GetAllWithSubTypeAsync();
 
-            if (item.Id == Guid.Empty)
-                return NotFound();
+            return Ok(list);
+        }
+
+        [HttpGet, Route("GetById/{id}")]
+        public ActionResult<IAsyncEnumerable<ItemDTO>> GetById(Guid id)
+        {
+            IAsyncEnumerable<ItemDTO> item = _itemService.GetByIdAsync(id);
 
             return Ok(item);
         }

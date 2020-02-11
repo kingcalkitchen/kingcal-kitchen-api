@@ -11,6 +11,8 @@ namespace KingCal.Service.Interfaces
 
         IAsyncEnumerable<PropertyDTO> GetAllAsync();
 
+        IAsyncEnumerable<PropertyDTO> GetByItemAsync(Guid itemId);
+
         Task<PropertyDTO> GetByIdAsync(Guid id);
 
     }

@@ -44,6 +44,7 @@ namespace KingCal
             services.AddScoped<ISubCategory, SubCategory>();
             services.AddScoped<IItem, Item>();
             services.AddScoped<ISubItem, SubItem>();
+            services.AddScoped<IItemSubItem, ItemSubItem>();
             services.AddScoped<ISubItemProperty, SubItemProperty>();
 
             services.AddControllers();

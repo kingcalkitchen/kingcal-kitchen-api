@@ -35,6 +35,21 @@ namespace KingCal.Service.Implementations
             }
         }
 
+        public async IAsyncEnumerable<PropertyDTO> GetByItemAsync(Guid itemId)
+        {
+            List<Data.Entities.Property> propertyList = await _context.Property.Where(a => a.ItemId == itemId).ToListAsync();
+
+            foreach (var property in propertyList)
+            {
+                if (property.DeletedDate is null)
+                {
+                    PropertyDTO propertyDTO = ClonePropertyEntity(property);
+
+                    yield return propertyDTO;
+                }
+            }
+        }
+
         public async Task<PropertyDTO> GetByIdAsync(Guid id)
         {
             Data.Entities.Property property = await _context.FindAsync<Data.Entities.Property>(id);

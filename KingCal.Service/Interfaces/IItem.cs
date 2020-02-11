@@ -8,10 +8,8 @@ namespace KingCal.Service.Interfaces
     public interface IItem
     {
         Task<Guid> CreateAsync(ItemDTO itemDTO);
-
         IAsyncEnumerable<ItemDTO> GetAllAsync();
-
-        Task<ItemDTO> GetByIdAsync(Guid id);
-
+        IAsyncEnumerable<ItemDTO> GetAllWithSubTypeAsync();
+        IAsyncEnumerable<ItemDTO> GetByIdAsync(Guid id);
     }
 }

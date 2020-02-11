@@ -12,9 +12,9 @@ namespace KingCal.Controllers
     [ApiController]
     public class SubItemPropertyController : ControllerBase
     {
-        private readonly ILogger<AddressController> _logger;
+        private readonly ILogger<SubItemPropertyController> _logger;
         private readonly ISubItemProperty _subItemPropertyService;
-        public SubItemPropertyController(ILogger<AddressController> logger, ISubItemProperty subItemPropertyService)
+        public SubItemPropertyController(ILogger<SubItemPropertyController> logger, ISubItemProperty subItemPropertyService)
         {
             _logger = logger;
             _subItemPropertyService = subItemPropertyService;
@@ -24,6 +24,14 @@ namespace KingCal.Controllers
         public ActionResult<IAsyncEnumerable<SubItemPropertyDTO>> GetAll()
         {
             IAsyncEnumerable<SubItemPropertyDTO> list = _subItemPropertyService.GetAllAsync();
+
+            return Ok(list);
+        }
+
+        [HttpGet, Route("GetBySubItem/{subItemId}")]
+        public ActionResult<IAsyncEnumerable<SubItemPropertyDTO>> GetBySubItem(Guid subItemId)
+        {
+            IAsyncEnumerable<SubItemPropertyDTO> list = _subItemPropertyService.GetBySubItemAsync(subItemId);
 
             return Ok(list);
         }

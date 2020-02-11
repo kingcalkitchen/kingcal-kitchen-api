@@ -30,16 +30,13 @@ namespace KingCal.Controllers
         }
 
         [HttpGet, Route("GetById/{id}")]
-        public async Task<ActionResult<SubItemDTO>> GetById(Guid id)
+        public ActionResult<IAsyncEnumerable<SubItemDTO>> GetById(Guid id)
         {
-            SubItemDTO subItem = await _subItemService.GetByIdAsync(id);
-
-            if (subItem.Id == Guid.Empty)
-                return NotFound();
+            IAsyncEnumerable<SubItemDTO> subItem = _subItemService.GetByIdAsync(id);
 
             return Ok(subItem);
         }
-
+        
         [HttpPost, Route("Create")]
         public async Task<ActionResult> Create([FromBody] SubItemDTO subItemDTO)
         {

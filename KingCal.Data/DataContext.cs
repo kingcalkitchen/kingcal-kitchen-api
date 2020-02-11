@@ -20,6 +20,9 @@ namespace KingCal.Data
         public DbSet<Property> Property { get; set; }
         public DbSet<SubItemProperty> SubItemProperty { get; set; }
         public DbSet<SubItem> SubItem { get; set; }
+        public DbSet<SubCategoryItem> SubCategoryItem { get; set; }
+        public DbSet<ItemSubItem> ItemSubItem { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SubCategoryItem>()
