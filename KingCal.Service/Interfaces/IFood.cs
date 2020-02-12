@@ -11,7 +11,7 @@ namespace KingCal.Service.Interfaces
 
         Task<FoodDTO> GetByIdAsync(Guid id);
 
-        Task<Guid> CreateAsync(FoodDTO foodDTO);
+        Task<Guid> CreateAsync(FoodDTO foodDTO, Guid currentUserId);
 
         Task<int> UpdateAsync(FoodDTO foodDTO);
 

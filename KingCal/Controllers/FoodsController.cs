@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace KingCal.Controllers
@@ -46,7 +48,13 @@ namespace KingCal.Controllers
         [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] FoodDTO foodDTO) 
         {
-            Guid id = await _foodService.CreateAsync(foodDTO);
+            Guid currentUser = Guid.Empty;
+            if (User != null)
+            {
+                currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
+            }
+
+            Guid id = await _foodService.CreateAsync(foodDTO, currentUser);
 
             if (id == Guid.Empty)
                 return StatusCode(303);

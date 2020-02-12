@@ -113,6 +113,8 @@ namespace KingCal
                 c.RoutePrefix = string.Empty;
             });
 
+            //app.UseHttpsRedirection();
+
             app.UseRouting();
 
             app.UseAuthorization();

@@ -49,7 +49,7 @@ namespace KingCal.Service.Implementations
             };
         }
 
-        public async Task<Guid> CreateAsync(FoodDTO foodDTO) 
+        public async Task<Guid> CreateAsync(FoodDTO foodDTO, Guid currentUserId) 
         {
             Guid id = Guid.NewGuid();
             await _context.Foods.AddAsync(new Data.Entities.Food
@@ -57,6 +57,7 @@ namespace KingCal.Service.Implementations
                 Id = id,
                 Name = foodDTO.Name,
                 CreatedDate = DateTime.Now,
+                CreatedBy = currentUserId,
             });
 
             try
