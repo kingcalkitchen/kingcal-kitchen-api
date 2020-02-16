@@ -16,12 +16,20 @@ namespace KingCal.Service.Implementations
         private readonly ILogger<Item> _logger;
         private readonly DataContext _context;
         private readonly IProperty _propertyService;
+        private readonly ISubItem _subItemService;
+        private readonly IItemSubItem _itemSubItemService;
 
-        public Item(ILogger<Item> logger, DataContext context, IProperty propertyService)
+        public Item(ILogger<Item> logger, 
+                    DataContext context, 
+                    IProperty propertyService,
+                    ISubItem subItemService,
+                    IItemSubItem itemSubItemService)
         {
             _logger = logger;
             _context = context;
             _propertyService = propertyService;
+            _subItemService = subItemService;
+            _itemSubItemService = itemSubItemService;
         }
 
         public async IAsyncEnumerable<ItemDTO> GetAllAsync()
@@ -85,9 +93,22 @@ namespace KingCal.Service.Implementations
                 {
                     IAsyncEnumerable<PropertyDTO> propertyDTOList = _propertyService.GetByItemAsync(item.Id);
 
-                    
+                    IAsyncEnumerable<ItemSubItemDTO> itemSubItemlist = _itemSubItemService.GetSubItemByItemAsync(item.Id);
 
-                    IAsyncEnumerable<ItemDTO> itemDTO = CloneItemEntity(item, propertyDTOList);
+                    List<SubItemDTO> subItemDTOList = new List<SubItemDTO>();
+
+                    await foreach (var itemSubItem in itemSubItemlist)
+                    {
+                        IAsyncEnumerable<SubItemDTO> subItem = _subItemService.GetByIdAsync(itemSubItem.SubItemId);
+
+                        await foreach (var tempItemSubItem in subItem)
+                        {
+                            subItemDTOList.Add(tempItemSubItem);
+                        }
+                    }
+
+
+                    IAsyncEnumerable<ItemDTO> itemDTO = CloneItemWithSubItem(item, propertyDTOList, subItemDTOList);
 
                     await foreach (var tempitem in itemDTO)
                     {
@@ -162,8 +183,38 @@ namespace KingCal.Service.Implementations
                 DeletedBy = item.DeletedBy,
             };
 
+
+                yield return itemDTO;
+        }
+
+        public async IAsyncEnumerable<ItemDTO> CloneItemWithSubItem(Data.Entities.Item item,
+                                        IAsyncEnumerable<PropertyDTO> propertyDTOList,
+                                        List<SubItemDTO> subItemDTOList)
+        {
+
+            List<PropertyDTO> propertyList = new List<PropertyDTO>();
+
+            await foreach (var property in propertyDTOList)
+            {
+                propertyList.Add(property);
+            };
+
+            ItemDTO itemDTO = new ItemDTO
+            {
+                Id = item.Id,
+                PropertyList = propertyList,
+                CreatedDate = item.CreatedDate,
+                CreatedBy = item.CreatedBy,
+                UpdatedDate = item.UpdatedDate,
+                UpdatedBy = item.UpdatedBy,
+                DeletedDate = item.DeletedDate,
+                DeletedBy = item.DeletedBy,
+                SubItemList = subItemDTOList
+            };
+
             yield return itemDTO;
         }
+
 
         public static implicit operator Item(Data.Entities.Item v)
         {

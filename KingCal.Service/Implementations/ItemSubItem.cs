@@ -46,6 +46,18 @@ namespace KingCal.Service.Implementations
                 }
         */
 
+        public async IAsyncEnumerable<ItemSubItemDTO> GetSubItemByItemAsync(Guid itemId)
+        {
+            List<Data.Entities.ItemSubItem> itemSubItemList = await _context.ItemSubItem.Where(a => a.ItemId == itemId).ToListAsync();
+
+            foreach (var itemSubItem in itemSubItemList)
+            {
+                    ItemSubItemDTO itemSubItemDTO = CloneItemSubItemEntity(itemSubItem);
+
+                    yield return itemSubItemDTO;
+            }
+        }
+
         public async Task<bool> AddSubItemToItemAsync(Guid itemId, Guid subItemId)
         {
             await _context.ItemSubItem.AddAsync(new Data.Entities.ItemSubItem
@@ -72,6 +84,16 @@ namespace KingCal.Service.Implementations
         public static implicit operator ItemSubItem(Data.Entities.ItemSubItem v)
         {
             throw new NotImplementedException();
+        }
+
+        public ItemSubItemDTO CloneItemSubItemEntity(Data.Entities.ItemSubItem itemSubItem)
+        {
+            ItemSubItemDTO itemSubItemDTO = new ItemSubItemDTO
+            {
+                ItemId = itemSubItem.ItemId,
+                SubItemId = itemSubItem.SubItemId,
+            };
+            return itemSubItemDTO;
         }
     }
 

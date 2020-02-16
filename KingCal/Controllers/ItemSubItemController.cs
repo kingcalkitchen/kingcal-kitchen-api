@@ -40,6 +40,16 @@ namespace KingCal.Controllers
                     return Ok(itemSubItem);
                 }
         */
+
+        [HttpGet, Route("GetSubItemByItem/{itemId}")]
+        public ActionResult<IAsyncEnumerable<ItemSubItemDTO>> GetSubItemByItem(Guid itemId)
+        {
+            IAsyncEnumerable<ItemSubItemDTO> list = _itemSubItemService.GetSubItemByItemAsync(itemId);
+
+            return Ok(list);
+        }
+
+
         [HttpPost, Route("AddSubItemToItem/{itemId}/{subItemId}")]
         public async Task<ActionResult> AddSubItemToItem(Guid itemId, Guid subItemId)
         {

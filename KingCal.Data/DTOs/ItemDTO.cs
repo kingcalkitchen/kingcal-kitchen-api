@@ -16,6 +16,7 @@ namespace KingCal.Data.DTOs
         public Guid? UpdatedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
         public Guid? DeletedBy { get; set; }
-        public List<SubCategoryItemDTO> SubCategoryItemDTO { get; set; }
+        public List<SubCategoryItemDTO> SubCategoryItemList { get; set; }
+        public List<SubItemDTO> SubItemList { get; set; }
     }
 }
