@@ -32,7 +32,7 @@ namespace KingCal
 
             // TODO
             // create DB User
-            string connectionString = $"Data Source={appSettings.HOSTNAME};Initial Catalog={appSettings.DB_NAME};";
+            string connectionString = $"Data Source={appSettings.HOSTNAME};Initial Catalog={appSettings.DB_NAME};User ID={appSettings.USERNAME};Password={appSettings.PASSWORD};";
 
             //services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString, b => b.MigrationsAssembly("KingCal")));
             services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
