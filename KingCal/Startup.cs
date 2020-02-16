@@ -49,8 +49,16 @@ namespace KingCal
             services.AddScoped<IUser, User>();
             services.AddScoped<IRole, Role>();
             services.AddScoped<IUserRoles, UserRoles>();
-            services.AddScoped<IFood, Food>();
             
+            services.AddScoped<IAddress, Address>();
+            services.AddScoped<IProperty, Property>();
+            services.AddScoped<ICategory, Category>();
+            services.AddScoped<ISubCategory, SubCategory>();
+            services.AddScoped<IItem, Item>();
+            services.AddScoped<ISubItem, SubItem>();
+            services.AddScoped<IItemSubItem, ItemSubItem>();
+            services.AddScoped<ISubItemProperty, SubItemProperty>();
+
             services.AddControllers();
 
             var key = Encoding.ASCII.GetBytes(_appSettings.SECRET);

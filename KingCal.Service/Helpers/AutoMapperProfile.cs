@@ -17,8 +17,6 @@ namespace KingCal.Service.Helpers
             CreateMap<UserRole, UserRoleDTO>();
             CreateMap<UserRoleDTO, UserRole>();
 
-            CreateMap<Food, FoodDTO>();
-            CreateMap<FoodDTO, Food>();
         }
     }
 }

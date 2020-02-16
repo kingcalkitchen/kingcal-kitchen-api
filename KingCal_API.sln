@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingCal", "KingCal\KingCal.csproj", "{783478D9-36F2-48BF-A799-C6AE093F7626}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingCal.Data", "KingCal.Data\KingCal.Data.csproj", "{5237D45B-4F3A-48E9-8B1C-A3054CD860D2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingCal.Service", "KingCal.Service\KingCal.Service.csproj", "{2F243D52-BB5D-4766-A2C2-E3303FE7466A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4257426E-88E5-45AB-A35E-9F5838840DF5}"
@@ -15,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		CODEOWNERS = CODEOWNERS
 		Dockerfile = Dockerfile
+		KingCal.Data\KingCal.Data.csproj = KingCal.Data\KingCal.Data.csproj
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -24,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{1231BB3E-28C
 		sql\kingcal_kitchen_01_28_20.sql = sql\kingcal_kitchen_01_28_20.sql
 		sql\kingcal_kitchen_01_29_20.sql = sql\kingcal_kitchen_01_29_20.sql
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KingCal.Data", "KingCal.Data\KingCal.Data.csproj", "{957E580F-2E65-4DC1-8C19-30CD262B68C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,14 +36,14 @@ Global
 		{783478D9-36F2-48BF-A799-C6AE093F7626}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{783478D9-36F2-48BF-A799-C6AE093F7626}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{783478D9-36F2-48BF-A799-C6AE093F7626}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5237D45B-4F3A-48E9-8B1C-A3054CD860D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5237D45B-4F3A-48E9-8B1C-A3054CD860D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5237D45B-4F3A-48E9-8B1C-A3054CD860D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5237D45B-4F3A-48E9-8B1C-A3054CD860D2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F243D52-BB5D-4766-A2C2-E3303FE7466A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2F243D52-BB5D-4766-A2C2-E3303FE7466A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F243D52-BB5D-4766-A2C2-E3303FE7466A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F243D52-BB5D-4766-A2C2-E3303FE7466A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{957E580F-2E65-4DC1-8C19-30CD262B68C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{957E580F-2E65-4DC1-8C19-30CD262B68C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{957E580F-2E65-4DC1-8C19-30CD262B68C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{957E580F-2E65-4DC1-8C19-30CD262B68C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

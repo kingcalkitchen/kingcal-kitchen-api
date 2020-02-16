@@ -1,93 +1,168 @@
-﻿using KingCal.Data.DTOs;
-using KingCal.Service.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿//using KingCal.Data.DTOs;
+//using KingCal.Service.Interfaces;
+//using Microsoft.AspNetCore.Authentication.JwtBearer;
+//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.Extensions.Logging;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Security.Claims;
+//using System.Threading.Tasks;
 
-namespace KingCal.Controllers
-{
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class FoodsController : ControllerBase
-    {
-        private readonly ILogger<FoodsController> _logger;
-        private readonly IFood _foodService;
+//namespace KingCal.Controllers
+//{
+//<<<<<<< HEAD
+//    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+//    [ApiController]
+//    [Route("api/[controller]")]
+//    public class FoodsController : ControllerBase
+//    {
+//        private readonly ILogger<FoodsController> _logger;
+//        private readonly IFood _foodService;
 
-        public FoodsController(ILogger<FoodsController> logger, IFood foodService)
-        {
-            _logger = logger;
-            _foodService = foodService;
-        }
+//        public FoodsController(ILogger<FoodsController> logger, IFood foodService)
+//        {
+//            _logger = logger;
+//            _foodService = foodService;
+//        }
 
-        [HttpGet("GetAll")]
-        public ActionResult<IAsyncEnumerable<FoodDTO>> GetAll()
-        {
-            IAsyncEnumerable<FoodDTO> list = _foodService.GetAllAsync();
+//        [HttpGet("GetAll")]
+//        public ActionResult<IAsyncEnumerable<FoodDTO>> GetAll()
+//        {
+//            IAsyncEnumerable<FoodDTO> list = _foodService.GetAllAsync();
 
-            return Ok(list);
-        }
+//            return Ok(list);
+//        }
 
-        [HttpGet("GetById/{id}")]
-        public async Task<ActionResult<FoodDTO>> GetById(Guid id) 
-        {
-            FoodDTO food = await _foodService.GetByIdAsync(id);
+//        [HttpGet("GetById/{id}")]
+//        public async Task<ActionResult<FoodDTO>> GetById(Guid id) 
+//        {
+//            FoodDTO food = await _foodService.GetByIdAsync(id);
 
-            if (food.Id == Guid.Empty)
-                return NotFound();
+//            if (food.Id == Guid.Empty)
+//                return NotFound();
 
-            return Ok(food);
-        }
+//            return Ok(food);
+//        }
 
-        [HttpPost("Create")]
-        public async Task<ActionResult> Create([FromBody] FoodDTO foodDTO) 
-        {
-            Guid currentUser = Guid.Empty;
-            if (User != null)
-            {
-                currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
-            }
+//        [HttpPost("Create")]
+//        public async Task<ActionResult> Create([FromBody] FoodDTO foodDTO) 
+//        {
+//            Guid currentUser = Guid.Empty;
+//            if (User != null)
+//            {
+//                currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
+//            }
 
-            Guid id = await _foodService.CreateAsync(foodDTO, currentUser);
+//            Guid id = await _foodService.CreateAsync(foodDTO, currentUser);
 
-            if (id == Guid.Empty)
-                return StatusCode(303);
+//            if (id == Guid.Empty)
+//                return StatusCode(303);
 
-            return Created(
-                new Uri(
-                    string.Concat(Request.Path.ToString().Remove(Request.Path.ToString().Length - 6, 6), $"GetById/{id}"), 
-                    UriKind.Relative), 
-                id);
-        }
+//            return Created(
+//                new Uri(
+//                    string.Concat(Request.Path.ToString().Remove(Request.Path.ToString().Length - 6, 6), $"GetById/{id}"), 
+//                    UriKind.Relative), 
+//                id);
+//        }
 
-        [HttpPut("Update")]
-        public async Task<ActionResult> Update([FromBody] FoodDTO foodDTO) 
-        {
-            int response = await _foodService.UpdateAsync(foodDTO);
+//        [HttpPut("Update")]
+//        public async Task<ActionResult> Update([FromBody] FoodDTO foodDTO) 
+//        {
+//            int response = await _foodService.UpdateAsync(foodDTO);
 
-            if (response < 0)
-                return NotFound();
+//            if (response < 0)
+//                return NotFound();
 
-            return Ok();
-        }
+//            return Ok();
+//        }
 
-        [HttpDelete("Delete/{id}")]
-        public async Task<ActionResult> Delete(Guid id) 
-        {
-            int response = await _foodService.DeleteAsync(id);
+//        [HttpDelete("Delete/{id}")]
+//        public async Task<ActionResult> Delete(Guid id) 
+//        {
+//            int response = await _foodService.DeleteAsync(id);
 
-            if (response > 0)
-                return Ok();
-            else if (response == -2)
-                return StatusCode(410);
-            else
-                return NotFound();
-        }
-    }
-}
+//            if (response > 0)
+//                return Ok();
+//            else if (response == -2)
+//                return StatusCode(410);
+//            else
+//                return NotFound();
+//        }
+//    }
+//=======
+//    //[ApiController]
+//    //[Route("api/[controller]")]
+//    //public class FoodsController : ControllerBase
+//    //{
+//    //    private readonly ILogger<FoodsController> _logger;
+
+//    //    private readonly IFood _foodService;
+
+//    //    public FoodsController(ILogger<FoodsController> logger, IFood foodService)
+//    //    {
+//    //        _logger = logger;
+//    //        _foodService = foodService;
+//    //    }
+
+//    //    [HttpGet, Route("GetAll")]
+//    //    public ActionResult<IAsyncEnumerable<FoodDTO>> GetAll()
+//    //    {
+//    //        IAsyncEnumerable<FoodDTO> list = _foodService.GetAllAsync();
+
+//    //        return Ok(list);
+//    //    }
+
+//    //    [HttpGet, Route("GetById/{id}")]
+//    //    public async Task<ActionResult<FoodDTO>> GetById(Guid id) 
+//    //    {
+//    //        FoodDTO food = await _foodService.GetByIdAsync(id);
+
+//    //        if (food.Id == Guid.Empty)
+//    //            return NotFound();
+
+//    //        return Ok(food);
+//    //    }
+
+//    //    [HttpPost, Route("Create")]
+//    //    public async Task<ActionResult> Create([FromBody] FoodDTO foodDTO) 
+//    //    {
+//    //        Guid id = await _foodService.CreateAsync(foodDTO);
+
+//    //        if (id == Guid.Empty)
+//    //            return StatusCode(303);
+
+//    //        return Created(
+//    //            new Uri(
+//    //                string.Concat(Request.Path.ToString().Remove(Request.Path.ToString().Length - 6, 6), $"GetById/{id}"), 
+//    //                UriKind.Relative), 
+//    //            id);
+//    //    }
+
+//    //    [HttpPut, Route("Update")]
+//    //    public async Task<ActionResult> Update([FromBody] FoodDTO foodDTO) 
+//    //    {
+//    //        int response = await _foodService.UpdateAsync(foodDTO);
+
+//    //        if (response < 0)
+//    //            return NotFound();
+
+//    //        return Ok();
+//    //    }
+
+//    //    [HttpDelete, Route("Delete/{id}")]
+//    //    public async Task<ActionResult> Delete(Guid id) 
+//    //    {
+//    //        int response = await _foodService.DeleteAsync(id);
+
+//    //        if (response > 0)
+//    //            return Ok();
+//    //        else if (response == -2)
+//    //            return StatusCode(410);
+//    //        else
+//    //            return NotFound();
+//    //    }
+//    //}
+//>>>>>>> AddingAddressTable
+//}
