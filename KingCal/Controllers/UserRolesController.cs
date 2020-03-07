@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using KingCal.Data.DTOs;
+using KingCal.Common.DTOs;
+using KingCal.Common.Models;
 using KingCal.Data.Entities;
-using KingCal.Data.Models;
-using KingCal.Service.Interfaces;
+using KingCal.Service.User.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace KingCal.Controllers
 {
@@ -34,21 +35,24 @@ namespace KingCal.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetRolesByUserId(Guid id) 
+        public async Task<IActionResult> GetRolesByUserId(Guid id)
         {
-            return Ok(_mapper.Map<List<RoleDTO>>(_userRolesService.GetRolesByUserId(id).ToList()));
+            List<Role> roles = new List<Role>();
+
+            IAsyncEnumerator<Role> role = _userRolesService.GetRolesByUserId(id).GetAsyncEnumerator();
+            while (await role.MoveNextAsync()) roles.Add(role.Current);
+
+            return Ok(_mapper.Map<List<RoleDTO>>(roles));
         }
 
         [HttpPost("AssignRole/{userId}/{roleId}")]
-        public IActionResult AssignRole(Guid userId, Guid roleId) 
+        public async Task<IActionResult> AssignRole(Guid userId, Guid roleId) 
         {
             Guid currentUser = Guid.Empty;
-            if (User != null) 
-            {
+            if (User.HasClaim(x => x.Type == ClaimTypes.Name))
                 currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
-            }
 
-            UserRole userRole = _userRolesService.AssignRole(userId, roleId, currentUser);
+            UserRole userRole = await _userRolesService.AssignRole(userId, roleId, currentUser);
 
             return Ok();
         }
@@ -57,7 +61,7 @@ namespace KingCal.Controllers
         public IActionResult RemoveRole(Guid userId, Guid roleId)
         {
             Guid currentUser = Guid.Empty;
-            if (User != null)
+            if (User.HasClaim(x => x.Type == ClaimTypes.Name))
                 currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
 
             _userRolesService.RemoveRole(userId, roleId, currentUser);

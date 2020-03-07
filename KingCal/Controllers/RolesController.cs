@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using KingCal.Data.DTOs;
+using KingCal.Common.DTOs;
+using KingCal.Common.Helpers;
+using KingCal.Common.Models;
 using KingCal.Data.Entities;
-using KingCal.Data.Models;
-using KingCal.Service.Helpers;
-using KingCal.Service.Interfaces;
+using KingCal.Service.User.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

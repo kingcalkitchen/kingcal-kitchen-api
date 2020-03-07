@@ -16,19 +16,18 @@ namespace KingCal.Data.Entities
 
         public DateTime ExpirationDate { get; set; }
 
-        public Guid CreatedBy { get; set; }
-
+        [Required]
         public DateTime CreatedDate { get; set; }
 
-        public Guid? DeletedBy { get; set; }
+        [Required]
+        public Guid CreatedBy { get; set; }
+
+        public DateTime? UpdatedDate { get; set; }
+
+        public Guid? UpdatedBy { get; set; }
 
         public DateTime? DeletedDate { get; set; }
 
-
-        [ForeignKey("CreatedBy")]
-        public virtual User Creator { get; set; }
-
-        [ForeignKey("DeletedBy")]
-        public virtual User Deletor { get; set; }
+        public Guid? DeletedBy { get; set; }
     }
 }

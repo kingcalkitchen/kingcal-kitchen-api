@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using KingCal.Data.DTOs;
+using KingCal.Common.DTOs;
+using KingCal.Common.Helpers;
+using KingCal.Common.Models;
 using KingCal.Data.Entities;
-using KingCal.Data.Models;
-using KingCal.Service.Helpers;
-using KingCal.Service.Interfaces;
+using KingCal.Service.User.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +16,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace KingCal.Controllers
 {
@@ -41,7 +42,7 @@ namespace KingCal.Controllers
 
         [AllowAnonymous]
         [HttpPost("Authenticate")]
-        public IActionResult Authenticate([FromBody] UserDTO userDto) 
+        public async Task<IActionResult> Authenticate([FromBody] UserDTO userDto) 
         {
             var user = _userService.Authenticate(userDto.Username, userDto.Password);
 
@@ -61,11 +62,8 @@ namespace KingCal.Controllers
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            List<Role> roles = _userRolesService.GetRolesByUserId(user.Id).ToList();
-            foreach (var role in roles)
-            {
-                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.Name));
-            }
+            IAsyncEnumerator<Role> role = _userRolesService.GetRolesByUserId(user.Id).GetAsyncEnumerator();
+            while (await role.MoveNextAsync()) tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.Current.Name));
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
@@ -77,11 +75,15 @@ namespace KingCal.Controllers
         [HttpPost("Register")]
         public IActionResult Register([FromBody] UserDTO userDto) 
         {
+            Guid currentUser = Guid.Empty;
+            if (User.HasClaim(x => x.Type == ClaimTypes.Name))
+                currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
+
             var user = _mapper.Map<User>(userDto);
 
             try
             {
-                User newUser = _userService.Create(user, userDto.Password);
+                User newUser = _userService.Create(user, userDto.Password, currentUser);
                 return Ok(newUser.Id);
             }
             catch (AppException ex)
@@ -110,12 +112,16 @@ namespace KingCal.Controllers
         [HttpPut("Update/{id}")]
         public IActionResult Update(Guid id, [FromBody] UserDTO userDto) 
         {
+            Guid currentUser = Guid.Empty;
+            if (User.HasClaim(x => x.Type == ClaimTypes.Name))
+                currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
+
             var user = _mapper.Map<User>(userDto);
             user.Id = id;
 
             try
             {
-                _userService.Update(user, userDto.Password);
+                _userService.Update(user, currentUser, userDto.Password);
                 return Ok();
             }
             catch (AppException ex)
@@ -127,7 +133,11 @@ namespace KingCal.Controllers
         [HttpDelete("Delete/{id}")]
         public IActionResult Delete(Guid id) 
         {
-            _userService.Delete(id);
+            Guid currentUser = Guid.Empty;
+            if (User.HasClaim(x => x.Type == ClaimTypes.Name))
+                currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
+
+            _userService.Delete(id, currentUser);
             return Ok();
         }
     }

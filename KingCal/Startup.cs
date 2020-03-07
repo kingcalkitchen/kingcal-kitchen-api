@@ -1,9 +1,12 @@
 using AutoMapper;
+using KingCal.Common.Models;
 using KingCal.Data;
-using KingCal.Data.Models;
-using KingCal.Service.Helpers;
+using KingCal.Service.Address.Implementations;
+using KingCal.Service.Address.Interfaces;
 using KingCal.Service.Implementations;
-using KingCal.Service.Interfaces;
+using KingCal.Service.Item.Implementations;
+using KingCal.Service.Item.Interfaces;
+using KingCal.Service.User.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -88,7 +91,9 @@ namespace KingCal
 
             var mappingConfig = new MapperConfiguration(mc => 
             {
-                mc.AddProfile(new AutoMapperProfile());
+                mc.AddProfile(new Service.Address.Config.AutoMapperProfile());
+                mc.AddProfile(new Service.User.Config.AutoMapperProfile());
+                mc.AddProfile(new Service.Item.Config.AutoMapperProfile());
             });
 
             IMapper mapper = mappingConfig.CreateMapper();

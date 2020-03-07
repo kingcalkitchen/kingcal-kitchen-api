@@ -13,15 +13,37 @@ namespace KingCal.Data.Entities
 
         public string FirstName { get; set; }
 
+        public string MiddleName { get; set; }
+
         public string LastName { get; set; }
 
+        [Required]
         public string Email { get; set; }
 
+        [Required]
         public string Username { get; set; }
 
+        [Required]
         public byte[] PasswordHash { get; set; }
 
+        [Required]
         public byte[] PasswordSalt { get; set; }
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
+
+        [Required]
+        public Guid CreatedBy { get; set; }
+
+        public DateTime? UpdatedDate { get; set; }
+
+        public Guid? UpdatedBy { get; set; }
+
+        public DateTime? DeletedDate { get; set; }
+
+        public Guid? DeletedBy { get; set; }
+
+        public IList<UserRole> UserRoles { get; set; }
 
     }
 }

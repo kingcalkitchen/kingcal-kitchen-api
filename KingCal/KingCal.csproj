@@ -28,8 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KingCal.Data\KingCal.Data.csproj" />
-    <ProjectReference Include="..\KingCal.Service\KingCal.Service.csproj" />
+    <ProjectReference Include="..\KingCal.Common\KingCal.Common.csproj" />
+    <ProjectReference Include="..\KingCal.Service.Address\KingCal.Service.Address.csproj" />
+    <ProjectReference Include="..\KingCal.Service.Items\KingCal.Service.Item.csproj" />
+    <ProjectReference Include="..\KingCal.Service.User\KingCal.Service.User.csproj" />
   </ItemGroup>
 
 </Project>
