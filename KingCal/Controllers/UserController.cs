@@ -44,10 +44,10 @@ namespace KingCal.Controllers
         [HttpPost("Authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] UserDTO userDto) 
         {
-            var user = _userService.Authenticate(userDto.Username, userDto.Password);
+            var user = _userService.Authenticate(userDto.Email, userDto.Password);
 
             if (user is null)
-                return BadRequest("Username or password is incorrect.");
+                return BadRequest("Email or password is incorrect.");
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.SECRET);
@@ -56,7 +56,7 @@ namespace KingCal.Controllers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.GivenName, user.LastName),
+                    //new Claim(ClaimTypes.GivenName, user.LastName),
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
