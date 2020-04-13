@@ -34,12 +34,12 @@ namespace KingCal.Controllers
             _appSettings = appSettings.Value;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetRolesByUserId(Guid id)
+        [HttpGet("GetRolesByUserId/{userId}")]
+        public async Task<IActionResult> GetRolesByUserId(Guid userId)
         {
             List<Role> roles = new List<Role>();
 
-            IAsyncEnumerator<Role> role = _userRolesService.GetRolesByUserId(id).GetAsyncEnumerator();
+            IAsyncEnumerator<Role> role = _userRolesService.GetRolesByUserId(userId).GetAsyncEnumerator();
             while (await role.MoveNextAsync()) roles.Add(role.Current);
 
             return Ok(_mapper.Map<List<RoleDTO>>(roles));

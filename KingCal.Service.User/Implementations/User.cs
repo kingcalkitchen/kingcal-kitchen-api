@@ -4,6 +4,7 @@ using KingCal.Data;
 using KingCal.Data.Entities;
 using KingCal.Service.User.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace KingCal.Service.Implementations
 {
@@ -20,13 +22,38 @@ namespace KingCal.Service.Implementations
         private readonly ILogger<User> _logger;
         private readonly DataContext _context;
         private readonly IUserRoles _userRolesService;
+        private readonly IConfiguration _configuration;
 
-        public User(IOptions<AppSettings> appSettings, ILogger<User> logger, DataContext context, IUserRoles userRolesService)
+        public User(IOptions<AppSettings> appSettings, ILogger<User> logger, DataContext context, IUserRoles userRolesService, IConfiguration configuration)
         {
             _appSettings = appSettings.Value;
             _logger = logger;
             _context = context;
             _userRolesService = userRolesService;
+            _configuration = configuration;
+        }
+
+        private Data.Entities.User FindOrAdd(Payload payload)
+        {
+            var user = _context.Users.SingleOrDefault(x => x.Email == payload.Email);
+            if (user == null)
+            {
+                user = new Data.Entities.User()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = payload.Name,
+                    Email = payload.Email,
+                    OauthSubject = payload.Subject,
+                    OauthIssuer = payload.Issuer,
+                };
+                Create(user, "Password1234!", Guid.Empty);
+            }
+            return user;
+        }
+
+        public Data.Entities.User Authenticate(Payload payload)
+        {
+            return FindOrAdd(payload);
         }
 
         public Data.Entities.User Authenticate(string email, string password)
@@ -34,7 +61,7 @@ namespace KingCal.Service.Implementations
             if (String.IsNullOrWhiteSpace(email) || String.IsNullOrWhiteSpace(password)) return null;
 
             var user = _context.Users.SingleOrDefault(x => x.Email == email);
-            if (user == null)  return null;
+            if (user == null) return null;
 
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)) return null;
 
@@ -46,7 +73,7 @@ namespace KingCal.Service.Implementations
             return _context.Users;
         }
 
-        public Data.Entities.User GetById(Guid id) 
+        public Data.Entities.User GetById(Guid id)
         {
             return _context.Users.Find(id);
         }
@@ -75,7 +102,7 @@ namespace KingCal.Service.Implementations
             return user;
         }
 
-        public void Update(Data.Entities.User userParam, Guid currentUser, string password = null) 
+        public void Update(Data.Entities.User userParam, Guid currentUser, string password = null)
         {
             var user = _context.Users.Find(userParam.Id);
 
@@ -91,7 +118,7 @@ namespace KingCal.Service.Implementations
                     throw new AppException("Email " + userParam.Email + " is already taken.");
             }
 
-            if (userParam.Username != user.Username) 
+            if (userParam.Username != user.Username)
             {
                 if (_context.Users.Any(x => x.Username == userParam.Username))
                     throw new AppException("Username " + userParam.Username + " is already taken.");
@@ -105,7 +132,7 @@ namespace KingCal.Service.Implementations
             user.UpdatedDate = DateTime.Now;
             user.UpdatedBy = currentUser != Guid.Empty ? currentUser : userParam.Id;
 
-            if (!String.IsNullOrWhiteSpace(password)) 
+            if (!String.IsNullOrWhiteSpace(password))
             {
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -118,7 +145,7 @@ namespace KingCal.Service.Implementations
             _context.SaveChanges();
         }
 
-        public void Delete(Guid id, Guid currentUser) 
+        public void Delete(Guid id, Guid currentUser)
         {
             var user = _context.Users
                 .Include(user => user.UserRoles)
@@ -126,11 +153,11 @@ namespace KingCal.Service.Implementations
                 .Where(x => x.Id == id)
                 .FirstOrDefault();
 
-            if (user != null) 
+            if (user != null)
             {
-                if (user.UserRoles.Count > 0) 
+                if (user.UserRoles.Count > 0)
                 {
-                    foreach (UserRole userRole in user.UserRoles) 
+                    foreach (UserRole userRole in user.UserRoles)
                     {
                         userRole.DeletedDate = DateTime.Now;
                         userRole.DeletedBy = currentUser;
@@ -167,7 +194,7 @@ namespace KingCal.Service.Implementations
             if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
             if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
 
-            using (var hmac = new HMACSHA512(storedSalt)) 
+            using (var hmac = new HMACSHA512(storedSalt))
             {
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 for (int i = 0; i < computedHash.Length; i++)

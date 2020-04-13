@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -52,7 +53,7 @@ namespace KingCal
             services.AddScoped<IUser, User>();
             services.AddScoped<IRole, Role>();
             services.AddScoped<IUserRoles, UserRoles>();
-            
+
             services.AddScoped<IAddress, Address>();
             services.AddScoped<IProperty, Property>();
             services.AddScoped<ICategory, Category>();
@@ -63,6 +64,8 @@ namespace KingCal
             services.AddScoped<ISubItemProperty, SubItemProperty>();
 
             services.AddControllers();
+
+            services.AddCors();
 
             var key = Encoding.ASCII.GetBytes(_appSettings.SECRET);
             services.AddAuthentication(x =>
@@ -89,7 +92,7 @@ namespace KingCal
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "KingCal Kitchen API", Version = "v1" });
             });
 
-            var mappingConfig = new MapperConfiguration(mc => 
+            var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new Service.Address.Config.AutoMapperProfile());
                 mc.AddProfile(new Service.User.Config.AutoMapperProfile());
@@ -99,7 +102,7 @@ namespace KingCal
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
 
-            services.AddMvc(x => 
+            services.AddMvc(x =>
             {
                 x.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser().Build()));

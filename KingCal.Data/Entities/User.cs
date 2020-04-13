@@ -11,6 +11,8 @@ namespace KingCal.Data.Entities
         [Key]
         public Guid Id { get; set; }
 
+        public string Name { get; set; }
+
         public string FirstName { get; set; }
 
         public string MiddleName { get; set; }
@@ -41,6 +43,12 @@ namespace KingCal.Data.Entities
         public DateTime? DeletedDate { get; set; }
 
         public Guid? DeletedBy { get; set; }
+
+
+        public string OauthSubject { get; set; }
+
+        public string OauthIssuer { get; set; }
+
 
         public IList<UserRole> UserRoles { get; set; }
 

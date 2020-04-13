@@ -9,14 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KingCal.Controllers
 {
@@ -38,60 +34,6 @@ namespace KingCal.Controllers
             _userService = userService;
             _userRolesService = userRolesService;
             _appSettings = appSettings.Value;
-        }
-
-        [AllowAnonymous]
-        [HttpPost("Authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] UserDTO userDto) 
-        {
-            var user = _userService.Authenticate(userDto.Email, userDto.Password);
-
-            if (user is null)
-                return BadRequest("Email or password is incorrect.");
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.SECRET);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.GivenName, user.FirstName ?? string.Empty),
-                    new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
-                }),
-                Expires = DateTime.UtcNow.AddDays(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            IAsyncEnumerator<Role> role = _userRolesService.GetRolesByUserId(user.Id).GetAsyncEnumerator();
-            while (await role.MoveNextAsync()) tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role.Current.Name));
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            return Ok(new { access_token = tokenString });
-        }
-
-        [AllowAnonymous]
-        [HttpPost("Register")]
-        public IActionResult Register([FromBody] UserDTO userDto) 
-        {
-            Guid currentUser = Guid.Empty;
-            if (User.HasClaim(x => x.Type == ClaimTypes.Name))
-                currentUser = Guid.Parse(User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault().Value);
-
-            var user = _mapper.Map<User>(userDto);
-
-            try
-            {
-                User newUser = _userService.Create(user, userDto.Password, currentUser);
-                return Ok(newUser.Id);
-            }
-            catch (AppException ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
 
         [HttpGet("GetAll")]
