@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Facebook;
 using Google.Apis.Auth;
 using KingCal.Common.DTOs;
 using KingCal.Common.Helpers;
@@ -49,10 +50,12 @@ namespace KingCal.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.GivenName, user.FirstName ?? string.Empty),
                     new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
+                    new Claim("photoUrl", user.PhotoUrl ?? null),
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -81,7 +84,11 @@ namespace KingCal.Controllers
         [HttpPost("GoogleLogin")]
         public async Task<IActionResult> GoogleAuthenticate([FromBody]TokenDTO token)
         {
-            var payload = ValidateAsync(token.access_token, new GoogleJsonWebSignature.ValidationSettings()).Result;
+            var payload = ValidateAsync(token.access_token, new ValidationSettings()).Result;
+
+            // convert to new payload object
+
+
             var user = _userService.Authenticate(payload);
 
             return Ok(await GetToken(user));
@@ -89,8 +96,19 @@ namespace KingCal.Controllers
 
         [AllowAnonymous]
         [HttpPost("FacebookLogin")]
-        public async Task<IActionResult> FacebookAuthenticate()
+        public async Task<IActionResult> FacebookAuthenticate([FromBody]TokenDTO token)
         {
+            var client = new FacebookClient(token.access_token);
+            dynamic me = client.Get("me?fields=first_name,middle_name,last_name,name,email,picture");
+
+
+
+
+
+
+
+
+
             return Ok();
         }
 

@@ -33,6 +33,21 @@ namespace KingCal.Service.Implementations
             _configuration = configuration;
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         private Data.Entities.User FindOrAdd(Payload payload)
         {
             var user = _context.Users.SingleOrDefault(x => x.Email == payload.Email);
@@ -41,15 +56,28 @@ namespace KingCal.Service.Implementations
                 user = new Data.Entities.User()
                 {
                     Id = Guid.NewGuid(),
+                    FirstName = payload.GivenName,
+                    LastName = payload.FamilyName,
                     Name = payload.Name,
                     Email = payload.Email,
                     OauthSubject = payload.Subject,
                     OauthIssuer = payload.Issuer,
+                    PhotoUrl = payload.Picture,
                 };
                 Create(user, "Password1234!", Guid.Empty);
             }
             return user;
         }
+
+
+
+
+
+
+
+
+
+
 
         public Data.Entities.User Authenticate(Payload payload)
         {
@@ -124,13 +152,24 @@ namespace KingCal.Service.Implementations
                     throw new AppException("Username " + userParam.Username + " is already taken.");
             }
 
+            string name = String.Format(
+                "{0}{1}{2}", 
+                String.IsNullOrEmpty(userParam.FirstName) ? string.Empty : String.Format("{0} ", userParam.FirstName),
+                String.IsNullOrEmpty(userParam.MiddleName) ? string.Empty : String.Format("{0} ", userParam.MiddleName),
+                String.IsNullOrEmpty(userParam.LastName) ? string.Empty : String.Format("{0} ", userParam.LastName)
+                );
+
             user.FirstName = userParam.FirstName;
             user.MiddleName = userParam.MiddleName;
             user.LastName = userParam.LastName;
+            user.Name = name;
             user.Username = userParam.Username;
             user.Email = userParam.Email;
             user.UpdatedDate = DateTime.Now;
             user.UpdatedBy = currentUser != Guid.Empty ? currentUser : userParam.Id;
+
+            // TODO
+            // add photoUrl
 
             if (!String.IsNullOrWhiteSpace(password))
             {

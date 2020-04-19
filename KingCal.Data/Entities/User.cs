@@ -49,6 +49,8 @@ namespace KingCal.Data.Entities
 
         public string OauthIssuer { get; set; }
 
+        public string PhotoUrl { get; set; }
+
 
         public IList<UserRole> UserRoles { get; set; }
 
